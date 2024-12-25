@@ -30,7 +30,7 @@ jobs:
       # Step 4: Update kubeconfig
       - name: Configure kubeconfig
         run: |
-          aws eks update-kubeconfig --name your-cluster-name --region ${{ secrets.AWS_REGION }}
+          aws eks update-kubeconfig --name happy-pop-sparrow --region ${{ secrets.AWS_REGION }}
 
       # Step 5: Verify connection
       - name: Get Kubernetes Nodes
