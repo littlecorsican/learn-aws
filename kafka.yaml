@@ -32,7 +32,6 @@ spec:
         cpu: '500m'
     storage:
       type: persistent-claim
-      storageClass: manual
       size: 5Gi # Matches PV size
       deleteClaim: false
   zookeeper:
@@ -46,40 +45,5 @@ spec:
         cpu: '500m'
     storage:
       type: persistent-claim
-      storageClass: manual
       size: 2Gi # Matches PV size
       deleteClaim: false
----
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: kafka-pv
-  namespace: default
-  labels:
-    app: kafka
-spec:
-  capacity:
-    storage: 5Gi
-  accessModes:
-    - ReadWriteOnce
-  persistentVolumeReclaimPolicy: Retain
-  storageClassName: manual
-  hostPath:
-    path: /mnt/data/kafka
----
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: zookeeper-pv
-  namespace: default
-  labels:
-    app: zookeeper
-spec:
-  capacity:
-    storage: 2Gi
-  accessModes:
-    - ReadWriteOnce
-  persistentVolumeReclaimPolicy: Retain
-  storageClassName: manual
-  hostPath:
-    path: /mnt/data/zookeeper
