@@ -1,4 +1,4 @@
-name: Deploy Strimzi kafka
+name: Deploy Strimzi Kafka
 
 on:
   workflow_dispatch: # Allows manual triggering
@@ -17,15 +17,25 @@ jobs:
           version: 'latest'
 
       - name: Authenticate with Kubernetes
-        env:
-          KUBECONFIG: ${{ secrets.KUBECONFIG }}
         run: |
           echo "${{ secrets.KUBECONFIG }}" > kubeconfig.yaml
-          export KUBECONFIG=kubeconfig.yaml
+          export KUBECONFIG=$(pwd)/kubeconfig.yaml
+          kubectl config view
+
+      - name: Test Kubernetes Connection
+        run: |
+          kubectl cluster-info
+          kubectl get nodes
+
+      - name: Check Context
+        run: kubectl config current-context
+
+      - name: List All Contexts
+        run: kubectl config get-contexts
 
       - name: Create Kafka Cluster
         run: |
-          kubectl apply -f kafka.yaml
+          kubectl apply -f kafka.yaml --validate=false
 
       - name: Verify Kafka Deployment
         run: |
