@@ -33,7 +33,7 @@ spec:
     storage:
       type: persistent-claim
       storageClass: manual
-      size: 50Gi # Matches PV size
+      size: 5Gi # Matches PV size
       deleteClaim: false
   zookeeper:
     replicas: 1
@@ -47,7 +47,7 @@ spec:
     storage:
       type: persistent-claim
       storageClass: manual
-      size: 10Gi # Matches PV size
+      size: 2Gi # Matches PV size
       deleteClaim: false
 ---
 apiVersion: v1
@@ -59,7 +59,7 @@ metadata:
     app: kafka
 spec:
   capacity:
-    storage: 50Gi
+    storage: 5Gi
   accessModes:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
@@ -76,7 +76,7 @@ metadata:
     app: zookeeper
 spec:
   capacity:
-    storage: 10Gi
+    storage: 2Gi
   accessModes:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
