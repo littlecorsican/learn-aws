@@ -17,10 +17,10 @@ spec:
         type: loadbalancer
         tls: false
     config:
-      offsets.topic.replication.factor: 1 # Changed to match replicas
-      transaction.state.log.replication.factor: 1 # Changed to match replicas
+      offsets.topic.replication.factor: 1
+      transaction.state.log.replication.factor: 1
       transaction.state.log.min.isr: 1
-      default.replication.factor: 1 # Changed to match replicas
+      default.replication.factor: 1
       min.insync.replicas: 1
       inter.broker.protocol.version: '3.8'
     resources:
@@ -32,8 +32,8 @@ spec:
         cpu: '500m'
     storage:
       type: persistent-claim
-      storageClass: gp2
-      size: 5Gi # Changed from 1Gi to 50Gi
+      storageClass: manual
+      size: 50Gi # Matches PV size
       deleteClaim: false
   zookeeper:
     replicas: 1
@@ -46,7 +46,38 @@ spec:
         cpu: '500m'
     storage:
       type: persistent-claim
-      storageClass: gp2
-      size: 2Gi # Increased for better performance
+      storageClass: manual
+      size: 10Gi # Matches PV size
       deleteClaim: false
-
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: kafka-pv
+  labels:
+    app: kafka
+spec:
+  capacity:
+    storage: 50Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: manual
+  hostPath:
+    path: /mnt/data/kafka
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: zookeeper-pv
+  labels:
+    app: zookeeper
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: manual
+  hostPath:
+    path: /mnt/data/zookeeper
