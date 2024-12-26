@@ -32,7 +32,8 @@ spec:
         cpu: '500m'
     storage:
       type: persistent-claim
-      size: 50Gi # Changed from 1Gi to 50Gi
+      storageClass: gp2
+      size: 5Gi # Changed from 1Gi to 50Gi
       deleteClaim: false
   zookeeper:
     replicas: 1
@@ -45,6 +46,7 @@ spec:
         cpu: '500m'
     storage:
       type: persistent-claim
-      size: 10Gi # Increased for better performance
+      storageClass: gp2
+      size: 2Gi # Increased for better performance
       deleteClaim: false
 
