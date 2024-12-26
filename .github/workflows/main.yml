@@ -1,0 +1,32 @@
+name: Deploy Strimzi kafka
+
+on:
+  workflow_dispatch: # Allows manual triggering
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'latest'
+
+      - name: Authenticate with Kubernetes
+        env:
+          KUBECONFIG: ${{ secrets.KUBECONFIG }}
+        run: |
+          echo "${{ secrets.KUBECONFIG }}" > kubeconfig.yaml
+          export KUBECONFIG=kubeconfig.yaml
+
+      - name: Create Kafka Cluster
+        run: |
+          kubectl apply -f kafka.yaml
+
+      - name: Verify Kafka Deployment
+        run: |
+          kubectl get kafka gogov-kafka
