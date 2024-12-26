@@ -8,11 +8,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout code (if needed)
+      # Step 1: Checkout code
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Step 2: Set up AWS CLI
+      # Step 2: Configure AWS CLI
       - name: Configure AWS CLI
         uses: aws-actions/configure-aws-credentials@v3
         with:
@@ -27,7 +27,7 @@ jobs:
           chmod +x kubectl
           sudo mv kubectl /usr/local/bin/
 
-      # Step 4: Update kubeconfig
+      # Step 4: Configure kubeconfig
       - name: Configure kubeconfig
         run: |
           aws eks update-kubeconfig --name happy-pop-sparrow --region ${{ secrets.AWS_REGION }}
@@ -36,3 +36,20 @@ jobs:
       - name: Get Kubernetes Nodes
         run: |
           kubectl get nodes
+
+      # Step 6: Install Helm
+      - name: Install Helm
+        run: |
+          curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+
+      # Step 7: Deploy Redis
+      - name: Deploy Redis
+        run: |
+          helm repo add bitnami https://charts.bitnami.com/bitnami
+          helm repo update
+          helm install my-redis bitnami/redis --set auth.enabled=false
+
+      # Step 8: Verify Redis Deployment
+      - name: Verify Redis Deployment
+        run: |
+          kubectl get pods -l app.kubernetes.io/name=redis
