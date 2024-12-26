@@ -27,31 +27,21 @@ jobs:
         with:
           version: 'latest'
 
-      # - name: Authenticate with Kubernetes
-      #   run: |
-      #     echo "${{ secrets.KUBECONFIG }}" > kubeconfig.yaml
-      #     export KUBECONFIG=$(pwd)/kubeconfig.yaml
-      #     kubectl config view
-
-      # - name: Authenticate with Kubernetes
-      #   env:
-      #     KUBECONFIG: ${{ secrets.KUBECONFIG }}
-      #   run: |
-      #     echo "${{ secrets.KUBECONFIG }}" > kubeconfig.yaml
-      #     export KUBECONFIG=kubeconfig.yaml
-
       - name: Test Kubernetes Connection
         run: |
           kubectl cluster-info
           kubectl get nodes
 
-      - name: Check Context
-        run: kubectl config current-context
+      - name: Install Strimzi CRDs
+        run: |
+          curl -L "https://strimzi.io/install/latest?namespace=default" -o strimzi-install.yaml
+          kubectl apply -f strimzi-install.yaml
 
-      - name: List All Contexts
-        run: kubectl config get-contexts
+      - name: Verify Strimzi Installation
+        run: |
+          kubectl get crds | grep kafka.strimzi.io
 
-      - name: Create Kafka Cluster
+      - name: Deploy Kafka Cluster
         run: |
           kubectl apply -f kafka.yaml --validate=false
 
